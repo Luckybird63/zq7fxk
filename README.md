@@ -1,106 +1,259 @@
-# Wind Forecast Decision Support Portal
+* {
+  box-sizing: border-box;
+}
 
-A React + Python decision-support portal for UK day-ahead power procurement, focused on national wind generation actuals and forecasts for January 2026.
+:root {
+  font-family: Inter, 'Segoe UI', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #e2e8f0;
+  background: #020817;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-This project was created with AI-assisted coding support (GitHub Copilot) during implementation.
+html {
+  scroll-behavior: smooth;
+}
 
-## Why this product matters
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, rgba(14, 165, 233, 0.14), transparent 18%),
+    radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.08), transparent 25%),
+    linear-gradient(180deg, #020817 0%, #0f172a 100%);
+}
 
-The client needs to decide how much additional electricity to buy from the day-ahead market after accounting for available wind generation. The portal helps them:
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
 
-- view the most recent wind generation forecast available to the trader
-- compare forecasted generation against actual generation
-- understand forecast error quantitatively using MAE, RMSE and MAPE
-- review a January 2026 decision window with clean operational summaries
+#root {
+  min-height: 100vh;
+}
 
-## Features
+.page-shell {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px 20px 64px;
+}
 
-- live or simulated wind actual vs forecast dataset for January 2026
-- latest forecast snapshot for the decision horizon
-- forecast accuracy metrics for day-ahead trading decisions
-- trend chart showing actual vs forecast generation across the month
-- daily aggregated summary for operational review
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 22px;
+}
 
-## Repository layout
+.eyebrow,
+.section-label {
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  color: #7dd3fc;
+}
 
-- `backend/` — FastAPI service that prepares the wind data and accuracy calculations
-- `frontend/` — React + Vite dashboard for the trading portal UI
-- `docker-compose.yml` — local Docker orchestration for the app stack
-- `README.md` — project overview and run instructions
-- `.gitignore` — standard project ignore file
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
 
-## Running locally with Docker
+h1 {
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  line-height: 1.08;
+}
 
-1. Clone the repo.
-2. From the project root, run:
+h2 {
+  font-size: clamp(1.4rem, 2.2vw, 2.1rem);
+}
 
-```bash
-docker compose up --build
-```
+h3 {
+  font-size: 1.2rem;
+}
 
-3. Open the frontend in the browser:
+.panel {
+  background: rgba(15, 23, 42, 0.82);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 20px;
+  box-shadow: 0 18px 48px rgba(15, 23, 42, 0.25);
+}
 
-- http://localhost:5173
+.hero {
+  padding: 24px 24px 16px;
+}
 
-4. The backend API is available at:
+.hero-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
 
-- http://localhost:8000/api/summary
-- http://localhost:8000/api/health
+.hero-text {
+  max-width: 900px;
+  color: #cbd5e1;
+  margin-bottom: 18px;
+}
 
-## Running without Docker
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+}
 
-### Backend
+.hero-stats > div {
+  padding: 14px 16px;
+  background: rgba(15, 118, 110, 0.08);
+  border: 1px solid rgba(45, 212, 191, 0.18);
+  border-radius: 14px;
+}
 
-```bash
-cd backend
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-```
+.meta-label {
+  display: block;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
 
-### Frontend
+.hero-stats strong {
+  font-size: 1rem;
+}
 
-```bash
-cd frontend
-npm install
-npm run dev -- --host 0.0.0.0 --port 5173
-```
+.status-pill,
+.risk-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
 
-## Backend notes
+.status-pill {
+  background: rgba(59, 130, 246, 0.08);
+  color: #bfdbfe;
+}
 
-The application is designed for the Elexon BMRS datasets:
+.risk-badge.low {
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.38);
+  color: #bbf7d0;
+}
 
-- wind actual generation: `FUELHH`
-- wind forecast generation: `WINDFOR`
+.risk-badge.medium {
+  background: rgba(245, 158, 11, 0.08);
+  border-color: rgba(245, 158, 11, 0.42);
+  color: #fcd34d;
+}
 
-If a BMRS API key is configured in the environment, the backend will attempt to call the live BMRS endpoints. When no API key is available, the service falls back to a January 2026 demo dataset so the portal remains usable in offline/demo setups.
+.risk-badge.high {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.38);
+  color: #fecaca;
+}
 
-## Deployment
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 18px;
+  margin: 24px 0;
+}
 
-This repository is structured so the frontend can be deployed to Vercel and the backend can be deployed to Heroku, Render, or a container platform. The exact live URLs will need to be set after deployment.
+.metric-card {
+  padding: 18px 20px;
+}
 
-Suggested production setup:
+.metric-label {
+  margin-bottom: 14px;
+  color: #a5b4cf;
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
 
-- Frontend: Vercel static app
-- Backend: Heroku / Render / Azure Container Apps
-- Shared environment variables:
-  - `BMRS_API_KEY`
-  - `CORS_ORIGINS`
+.metric-value {
+  font-size: clamp(1.5rem, 2vw, 2.2rem);
+  font-weight: 700;
+}
 
-## Product pitch example
+.chart-panel,
+.table-panel {
+  padding: 20px;
+  margin-top: 24px;
+}
 
-> We have created a trading support portal that gives the day-ahead power procurement team immediate visibility into the latest UK wind generation forecast and the confidence range around it. The team can evaluate expected renewable generation, compare it with actual historical wind output, and quantify forecast accuracy before making wholesale market purchase decisions. This gives the client a practical, operational tool for balancing renewable uncertainty with procurement risk.
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
 
-## Technical review summary
+.chart-wrap {
+  height: 360px;
+}
 
-The solution comprises:
+.table-wrap {
+  overflow-x: auto;
+}
 
-- a Python FastAPI backend for data collection, transformation, and analytics
-- a React/Vite frontend for clear operational dashboards and charts
-- Docker-based local deployment to keep the development environment consistent
-- a simple architecture designed for incremental extension to more market datasets and trading workflows
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
 
-## License
+th,
+td {
+  text-align: left;
+  padding: 12px 10px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
 
-This repository is for demonstration and client pilot purposes.
+th {
+  color: #94a3b8;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.loading-card,
+.error-card {
+  max-width: 720px;
+  margin: 80px auto;
+  background: rgba(15, 23, 42, 0.8);
+  color: #e2e8f0;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 18px;
+  padding: 28px;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .topbar,
+  .hero-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .page-shell {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+}

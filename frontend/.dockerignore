@@ -1,0 +1,7 @@
+# .dockerignore for frontend
+node_modules
+npm-debug.log
+.vite
+.dist
+.git
+Dockerfile
