@@ -138,3 +138,6 @@ This is designed as a pilot-ready product for an internal demo and customer-faci
 ## License
 
 This project is intended for demonstration and pilot evaluation purposes.
+
+## Conclusion
+for the readme part and to fix some local issues i have used github co pilot and built this.
