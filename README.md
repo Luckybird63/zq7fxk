@@ -1,259 +1,140 @@
-* {
-  box-sizing: border-box;
-}
+# UK Wind Forecast Decision Support Portal
 
-:root {
-  font-family: Inter, 'Segoe UI', sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color: #e2e8f0;
-  background: #020817;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+A React + Python decision-support portal for day-ahead power procurement in the UK, focused on national wind generation actuals and forecasts for January 2026.
 
-html {
-  scroll-behavior: smooth;
-}
+## Product purpose
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  background:
-    radial-gradient(circle at top, rgba(14, 165, 233, 0.14), transparent 18%),
-    radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.08), transparent 25%),
-    linear-gradient(180deg, #020817 0%, #0f172a 100%);
-}
+This portal supports a utility trading team that must decide how much additional power to buy from the day-ahead market when renewable generation is uncertain and weather-dependent.
 
-button,
-input,
-textarea,
-select {
-  font: inherit;
-}
+The app focuses on two key questions:
 
-#root {
-  min-height: 100vh;
-}
+- What is the latest available wind generation forecast for the procurement decision horizon?
+- How reliable is that forecast, using quantified forecast error metrics?
 
-.page-shell {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 32px 20px 64px;
-}
+## Business context
 
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 22px;
-}
+The trading team must ensure sufficient generation is available to meet customer demand. Wind output is renewable and weather-dependent, so the team needs a clear view of forecasted renewable contribution and the likely error in that forecast.
 
-.eyebrow,
-.section-label {
-  margin: 0 0 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 0.72rem;
-  color: #7dd3fc;
-}
+This challenge narrows scope to UK national wind generation only, using:
 
-h1,
-h2,
-h3,
-p {
-  margin: 0;
-}
+- actual generation from Elexon BMRS `FUELHH` for `fuelType = WIND`
+- forecast generation from Elexon BMRS `WINDFOR`
+- January 2026 as the relevant decision window
 
-h1 {
-  font-size: clamp(2.2rem, 4vw, 3.2rem);
-  line-height: 1.08;
-}
+## What the app shows
 
-h2 {
-  font-size: clamp(1.4rem, 2.2vw, 2.1rem);
-}
+- latest available wind forecast snapshot
+- actual vs forecast generation chart
+- forecast error metrics (MAE, RMSE, MAPE)
+- daily summary of forecast performance
+- operational risk signal for day-ahead procurement decisions
 
-h3 {
-  font-size: 1.2rem;
-}
+## Tech stack
 
-.panel {
-  background: rgba(15, 23, 42, 0.82);
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  border-radius: 20px;
-  box-shadow: 0 18px 48px rgba(15, 23, 42, 0.25);
-}
+- Frontend: React + Vite + Recharts
+- Backend: Python + FastAPI
+- Containerization: Docker Compose
+- Data source: Elexon BMRS when an API key is configured
+- Fallback mode: demo January 2026 dataset if no BMRS key is available
 
-.hero {
-  padding: 24px 24px 16px;
-}
+## AI usage
 
-.hero-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 10px;
-}
+This project was developed with AI-assisted coding support using GitHub Copilot.
 
-.hero-text {
-  max-width: 900px;
-  color: #cbd5e1;
-  margin-bottom: 18px;
-}
+## Repository structure
 
-.hero-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 16px;
-}
+- `backend/` — FastAPI service and wind analytics logic
+- `backend/app/main.py` — API endpoints and calculations
+- `frontend/` — React dashboard UI and styling
+- `frontend/src/App.jsx` — dashboard logic and visual layout
+- `frontend/src/styles.css` — polished styling and responsive layout
+- `docker-compose.yml` — local orchestration for backend + frontend
+- `.env.example` — sample environment variables
+- `README.md` — project overview and run instructions
 
-.hero-stats > div {
-  padding: 14px 16px;
-  background: rgba(15, 118, 110, 0.08);
-  border: 1px solid rgba(45, 212, 191, 0.18);
-  border-radius: 14px;
-}
+## Local setup
 
-.meta-label {
-  display: block;
-  font-size: 0.75rem;
-  color: #94a3b8;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 6px;
-}
+1. Create the environment file:
 
-.hero-stats strong {
-  font-size: 1rem;
-}
+```bash
+cp .env.example .env
+```
 
-.status-pill,
-.risk-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 14px;
-  border-radius: 999px;
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  font-size: 0.75rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
+2. Start the app:
 
-.status-pill {
-  background: rgba(59, 130, 246, 0.08);
-  color: #bfdbfe;
-}
+```bash
+docker compose up --build
+```
 
-.risk-badge.low {
-  background: rgba(34, 197, 94, 0.1);
-  border-color: rgba(34, 197, 94, 0.38);
-  color: #bbf7d0;
-}
+3. Open the application:
 
-.risk-badge.medium {
-  background: rgba(245, 158, 11, 0.08);
-  border-color: rgba(245, 158, 11, 0.42);
-  color: #fcd34d;
-}
+- Frontend: http://localhost:5173
+- Backend health endpoint: http://localhost:8000/api/health
+- Backend summary endpoint: http://localhost:8000/api/summary
 
-.risk-badge.high {
-  background: rgba(239, 68, 68, 0.08);
-  border-color: rgba(239, 68, 68, 0.38);
-  color: #fecaca;
-}
+## Running without Docker
 
-.metrics-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  gap: 18px;
-  margin: 24px 0;
-}
+### Backend
 
-.metric-card {
-  padding: 18px 20px;
-}
+```bash
+cd backend
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
 
-.metric-label {
-  margin-bottom: 14px;
-  color: #a5b4cf;
-  font-size: 0.76rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
+### Frontend
 
-.metric-value {
-  font-size: clamp(1.5rem, 2vw, 2.2rem);
-  font-weight: 700;
-}
+```bash
+cd frontend
+npm install
+npm run dev -- --host 0.0.0.0 --port 5173
+```
 
-.chart-panel,
-.table-panel {
-  padding: 20px;
-  margin-top: 24px;
-}
+## Environment variables
 
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
+Example `.env` values:
 
-.chart-wrap {
-  height: 360px;
-}
+```env
+BMRS_API_KEY=
+CORS_ORIGINS=http://localhost:5173
+VITE_API_URL=http://localhost:8000/api
+```
 
-.table-wrap {
-  overflow-x: auto;
-}
+If `BMRS_API_KEY` is empty, the backend automatically uses an internal January 2026 demo dataset so the dashboard remains usable in local/demo environments.
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-}
+## Deployment guidance
 
-th,
-td {
-  text-align: left;
-  padding: 12px 10px;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
-}
+### Frontend to Vercel
 
-th {
-  color: #94a3b8;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
+1. Import the `frontend` folder into Vercel.
+2. Set build command: `npm run build`
+3. Set output directory: `dist`
+4. Add environment variable:
+   - `VITE_API_URL=https://your-backend-url/api`
 
-.loading-card,
-.error-card {
-  max-width: 720px;
-  margin: 80px auto;
-  background: rgba(15, 23, 42, 0.8);
-  color: #e2e8f0;
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  border-radius: 18px;
-  padding: 28px;
-  text-align: center;
-}
+### Backend to Render or Heroku
 
-@media (max-width: 640px) {
-  .topbar,
-  .hero-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+Typical environment variables:
 
-  .page-shell {
-    padding-left: 14px;
-    padding-right: 14px;
-  }
-}
+- `BMRS_API_KEY`
+- `CORS_ORIGINS=https://your-frontend-url`
+
+For Render or Heroku, the app should be started with the Python service command:
+
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port 10000
+```
+
+## Notes on the solution
+
+This is designed as a pilot-ready product for an internal demo and customer-facing review. The architecture is intentionally straightforward:
+
+- FastAPI backend handles BMRS integration, data cleaning, and forecast error calculations
+- React frontend renders the trading dashboard and operational summary
+- Docker Compose keeps local development consistent and easy to run
+
+## License
+
+This project is intended for demonstration and pilot evaluation purposes.
