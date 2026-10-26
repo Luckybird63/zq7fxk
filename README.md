@@ -105,10 +105,7 @@ VITE_API_URL=http://localhost:8000/api
 If `BMRS_API_KEY` is empty, the backend automatically uses an internal January 2026 demo dataset so the dashboard remains usable in local/demo environments.
 
 ## Link to app
-zq7fxk-l9ifemgjw-debabratachowdhury711-8928s-projects.vercel.app
-
-
-```
+```zq7fxk-l9ifemgjw-debabratachowdhury711-8928s-projects.vercel.app```
 
 ## Notes on the solution
 
