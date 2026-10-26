@@ -104,27 +104,10 @@ VITE_API_URL=http://localhost:8000/api
 
 If `BMRS_API_KEY` is empty, the backend automatically uses an internal January 2026 demo dataset so the dashboard remains usable in local/demo environments.
 
-## Deployment guidance
+## Link to app
+zq7fxk-l9ifemgjw-debabratachowdhury711-8928s-projects.vercel.app
 
-### Frontend to Vercel
 
-1. Import the `frontend` folder into Vercel.
-2. Set build command: `npm run build`
-3. Set output directory: `dist`
-4. Add environment variable:
-   - `VITE_API_URL=https://your-backend-url/api`
-
-### Backend to Render or Heroku
-
-Typical environment variables:
-
-- `BMRS_API_KEY`
-- `CORS_ORIGINS=https://your-frontend-url`
-
-For Render or Heroku, the app should be started with the Python service command:
-
-```bash
-uvicorn app.main:app --host 0.0.0.0 --port 10000
 ```
 
 ## Notes on the solution
